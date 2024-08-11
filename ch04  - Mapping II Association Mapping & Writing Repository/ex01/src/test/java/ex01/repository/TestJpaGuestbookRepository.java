@@ -2,13 +2,15 @@ package ex01.repository;
 
 import ex01.domain.Guestbook;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestJpaGuestbookRepository {
-    private static Guestbook guesbookMock01 = new Guestbook("고길동", "1234", "안녕!", new Date());
-    private static Guestbook guesbookMock02 = new Guestbook("고철수", "1234", "안녕하세요!", new Date());
-    private static Guestbook guesbookMock03 = new Guestbook("고영희", "1234", "안녕하세요!", new Date());
-    private static Long countGuestbook;
+    private static final Guestbook guesbookMock01 = new Guestbook("고길동", "1234", "안녕!", new Date());
+    private static final Guestbook guesbookMock02 = new Guestbook("고철수", "1234", "안녕하세요!", new Date());
+    private static final Guestbook guesbookMock03 = new Guestbook("고영희", "1234", "안녕하세요!", new Date());
+    private static Long countGuestbook = null;
 
     @Autowired
     private JpaGuestbookRepository guestbookRepository;
@@ -47,6 +49,7 @@ public class TestJpaGuestbookRepository {
 
     @Test
     @Order(1)
+    @Transactional //  for Divisioning JPQL Logs
     public void testFindAll() {
         List<Guestbook> list = guestbookRepository.findAll();
         assertEquals(countGuestbook, list.size());
@@ -54,6 +57,7 @@ public class TestJpaGuestbookRepository {
 
     @Test
     @Order(2)
+    @Transactional //  for Divisioning JPQL Logs
     public void testFindAllSortByRegDateAsc() {
         List<Guestbook> list = guestbookRepository.findAll(Sort.by(Sort.Direction.ASC, "regDate"));
         assertEquals(countGuestbook, list.size());
@@ -61,6 +65,7 @@ public class TestJpaGuestbookRepository {
 
     @Test
     @Order(3)
+    @Transactional //  for Divisioning JPQL Logs
     public void testFindAllPagination() {
         Page<Guestbook> page = guestbookRepository.findAll(PageRequest.of(0, 2, Sort.Direction.DESC, "regDate"));
         List<Guestbook> list = page.getContent();
@@ -69,6 +74,7 @@ public class TestJpaGuestbookRepository {
 
     @Test
     @Order(4)
+    @Transactional //  for Divisioning JPQL Logs
     public void testFindAllByOrderByRegDateDesc() {
         List<Guestbook> list = guestbookRepository.findAllByOrderByRegDateDesc();
         assertEquals(countGuestbook, list.size());
@@ -78,7 +84,7 @@ public class TestJpaGuestbookRepository {
     @Order(5)
     @Transactional
     @Rollback(false)
-    public void testFindByIdAndDelete(){
+    public void testFindByIdAndDelete() {
         Guestbook guestbook = guestbookRepository.findById(guesbookMock01.getId()).orElse(null);
         assertNotNull(guestbook);
 
@@ -90,7 +96,7 @@ public class TestJpaGuestbookRepository {
     @Order(6)
     @Transactional
     @Rollback(false)
-    public void testDeleteById(){
+    public void testDeleteById() {
         guestbookRepository.deleteById(guesbookMock02.getId());
         assertEquals(--countGuestbook, guestbookRepository.count());
     }
@@ -100,7 +106,6 @@ public class TestJpaGuestbookRepository {
     @Transactional
     @Rollback(false)
     public void testDeleteByIdAndPassword() {
-        assertTrue(guestbookRepository.deleteByIdAndPassword(guesbookMock03.getId(), "1234") == 1);
-        assertEquals(--countGuestbook, guestbookRepository.count());
+        assertEquals(1, guestbookRepository.deleteByIdAndPassword(guesbookMock03.getId(), "1234"));
     }
 }

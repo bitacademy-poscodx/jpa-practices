@@ -1,7 +1,7 @@
 package ex01.repository;
 
 import ex01.domain.Guestbook;
-import ex01.dto.GuestbookDto;
+import ex01.domain.dto.GuestbookDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -15,13 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestJpqlGuestbookRepository {
-    private static Guestbook guesbookMock = new Guestbook("고길동", "1234", "안녕", new Date());
+    private static final Guestbook guesbookMock = new Guestbook("고길동", "1234", "안녕", new Date());
 
     @Autowired
     private JpqlGuestbookRepository guestbookRepository;
@@ -37,16 +38,18 @@ public class TestJpqlGuestbookRepository {
 
     @Test
     @Order(1)
+    @Transactional //  for Divisioning JPQL Logs
     public void testFindAll01() {
         List<Guestbook> list = guestbookRepository.findAll01();
-        assertTrue(guestbookRepository.count() == list.size());
+        assertEquals(guestbookRepository.count(), list.size());
     }
 
     @Test
     @Order(2)
+    @Transactional //  for Divisioning JPQL Logs
     public void testFindAll02() {
         List<GuestbookDto> list = guestbookRepository.findAll02();
-        assertTrue(guestbookRepository.count() == list.size());
+        assertEquals(guestbookRepository.count(), list.size());
     }
 
     @Test

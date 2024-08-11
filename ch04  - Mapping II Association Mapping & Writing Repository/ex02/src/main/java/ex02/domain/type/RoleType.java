@@ -1,4 +1,4 @@
-package ex03.domain.types;
+package ex02.domain.type;
 
 public enum RoleType {
     ADMIN,

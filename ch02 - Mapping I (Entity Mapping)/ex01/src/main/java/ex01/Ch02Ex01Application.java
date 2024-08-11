@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
 @EntityScan(basePackages = {"ex01.domain"})
-public class Ex01Application {
+public class Ch02Ex01Application {
     public static void main(String[] args) {
-        SpringApplication.run(Ex01Application.class, args);
+        SpringApplication.run(Ch02Ex01Application.class, args);
     }
 }

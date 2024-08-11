@@ -12,9 +12,9 @@ import javax.persistence.EntityManager;
 @SpringBootApplication
 @EntityScan(basePackages = {"ex01.domain"})
 @EnableJpaRepositories(basePackages = {"ex01.repository"})
-public class Ex01Application {
+public class Ch04Ex01Application {
     public static void main(String[] args) {
-        SpringApplication.run(Ex01Application.class, args);
+        SpringApplication.run(Ch04Ex01Application.class, args);
     }
 
     @Bean

@@ -1,26 +1,48 @@
-### MAVEN or Gradle###
+## Mac
+**/.DS_Store
+
+## maven, gradle
 **/target
 **/.gradle/
 **/settings.gradle
 **/build/
 **/out
 
-### STS ###
+## node
+**/node_modules
+
+# typescript
+**/*.tsbuildinfo
+
+## react
+**/bundle.js
+**/main.js
+
+# next.js
+**/.next/
+**/out/
+**/next-env.d.ts
+
+# vercel
+**/.vercel
+
+## eclipse, sts
 **/.apt_generated
 **/.classpath
+**/.mvn
 **/.factorypath
 **/.project
 **/.settings
 **/.springBeans
 **/.sts4-cache
 
-### IntelliJ IDEA ###
+## intellij
 **/.idea
 **/*.iws
 **/*.iml
 **/*.ipr
 
-### VS Code ###
+## vs code
 **/.vscode
 **/.suo
 **/.ntvs*
@@ -28,5 +50,8 @@
 **/.sln
 **/.sw?
 
-### Mac ###
-**/.DS_Store
+## application
+**/logs
+
+## private technotes
+**/technotes

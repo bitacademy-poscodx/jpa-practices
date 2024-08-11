@@ -3,7 +3,7 @@ package ex01.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import ex01.domain.Guestbook;
-import ex01.dto.GuestbookDto;
+import ex01.domain.dto.GuestbookDto;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 import java.util.List;

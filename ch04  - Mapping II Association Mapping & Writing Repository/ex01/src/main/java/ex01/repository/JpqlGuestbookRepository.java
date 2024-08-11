@@ -1,7 +1,7 @@
 package ex01.repository;
 
 import ex01.domain.Guestbook;
-import ex01.dto.GuestbookDto;
+import ex01.domain.dto.GuestbookDto;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -37,7 +37,7 @@ public class JpqlGuestbookRepository {
 
     // 조회02: projection
     public List<GuestbookDto> findAll02() {
-        String qlString = "select new ex01.dto.GuestbookDto(gb.id, gb.name, gb.contents, gb.regDate) from Guestbook gb order by gb.regDate desc";
+        String qlString = "select new ex01.domain.dto.GuestbookDto(gb.id, gb.name, gb.contents, gb.regDate) from Guestbook gb order by gb.regDate desc";
         TypedQuery<GuestbookDto> query = em.createQuery(qlString, GuestbookDto.class);
         return query.getResultList();
     }

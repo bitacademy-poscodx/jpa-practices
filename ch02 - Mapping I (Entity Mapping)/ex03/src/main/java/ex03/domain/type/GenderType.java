@@ -1,4 +1,4 @@
-package ex03.domain.types;
+package ex03.domain.type;
 
 public enum GenderType {
     female,

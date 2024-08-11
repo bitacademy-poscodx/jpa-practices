@@ -1,7 +1,7 @@
 package ex01.repository;
 
 import ex01.domain.Guestbook;
-import ex01.dto.GuestbookDto;
+import ex01.domain.dto.GuestbookDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestQueryDslGuestbookRepository {
-    private static Guestbook guesbookMock = new Guestbook("고길동", "1234", "안녕", new Date());
+    private static final Guestbook guesbookMock = new Guestbook("고길동", "1234", "안녕", new Date());
 
     @Autowired
     private QueryDslGuestbookRepository guestbookRepository;
@@ -38,15 +38,18 @@ public class TestQueryDslGuestbookRepository {
 
     @Test
     @Order(1)
+    @Transactional //  for Divisioning JPQL Logs
     public void testFindAll01() {
         List<Guestbook> list = guestbookRepository.findAll01();
-        assertTrue(guestbookRepository.count() == list.size());
+        assertEquals(guestbookRepository.count(), list.size());
     }
+
     @Test
     @Order(2)
+    @Transactional //  for Divisioning JPQL Logs
     public void testFindAll02() {
         List<GuestbookDto> list = guestbookRepository.findAll02();
-        assertTrue(guestbookRepository.count() == list.size());
+        assertEquals(guestbookRepository.count(), list.size());
     }
 
     @Test
