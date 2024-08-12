@@ -60,25 +60,25 @@ public class JpqlBoardRepository {
         return query.getResultList();
     }
 
-    // 조회06: Fetch List: Fetch Join 사용: Paging(3 of each)
-    public List<Board> findAll03(Integer page) {
+    // 조회06: Fetch List: Fetch Join 사용: Paging(size of each)
+    public List<Board> findAll03(Integer page, Integer size) {
         String qlString = "select b from Board b join fetch b.user order by b.regDate desc";
         TypedQuery<Board> query = em.createQuery(qlString, Board.class);
 
-        query.setFirstResult((page - 1) * 3);
-        query.setMaxResults(3);
+        query.setFirstResult((page - 1) * size);
+        query.setMaxResults(size);
 
         return query.getResultList();
     }
 
-    // 조회07: Fetch List: Fetch Join 사용: Paging(3 of each): Like Searching
-    public List<Board> findAll03(String keyword, Integer page) {
+    // 조회07: Fetch List: Fetch Join 사용: Paging(size of each): Like Searching
+    public List<Board> findAll03(String keyword, Integer page, Integer size) {
         String qlString = "select b from Board b join fetch b.user where b.title like :keywordContains or b.contents like :keywordContains order by b.regDate desc";
         TypedQuery<Board> query = em.createQuery(qlString, Board.class);
 
         query.setParameter("keywordContains", "%" + keyword + "%");
-        query.setFirstResult((page - 1) * 3);
-        query.setMaxResults(3);
+        query.setFirstResult((page - 1) * size);
+        query.setMaxResults(size);
 
         return query.getResultList();
     }

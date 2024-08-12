@@ -25,7 +25,7 @@ public class TestQueryDslGuestbookRepository {
     private static final Guestbook guesbookMock = new Guestbook("고길동", "1234", "안녕", new Date());
 
     @Autowired
-    private QueryDslGuestbookRepository guestbookRepository;
+    private QuerydslGuestbookRepository guestbookRepository;
 
     @Test
     @Order(0)

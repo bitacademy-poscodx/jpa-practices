@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Slf4j
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestJpqlBoardRepository {
+public class TestQuerydslBoardRepository {
     private static final User user01 = new User("고길동", "gildong@gmail.com", "1234", GenderType.male);
     private static final User user02 = new User("김정자", "joengja@gmail.com", "1234", GenderType.female);
     private static final Board board01 = new Board("제목1", "내용1", user01);
@@ -30,10 +30,10 @@ public class TestJpqlBoardRepository {
     private static Long countBoard;
 
     @Autowired
-    private JpqlUserRepository userRepository;
+    private QuerydslUserRepository userRepository;
 
     @Autowired
-    private JpqlBoardRepository boardRepository;
+    private QuerydslBoardRepository boardRepository;
 
     @Test
     @Order(0)
@@ -60,7 +60,7 @@ public class TestJpqlBoardRepository {
 
     @Test
     @Order(1)
-    @Transactional
+    @Transactional //  for Divisioning JPQL Logs
     public void testFindById01() {
         Board board = boardRepository.findById01(board01.getId());
 
@@ -106,7 +106,7 @@ public class TestJpqlBoardRepository {
     @Order(6)
     @Transactional //  for Divisioning JPQL Logs
     public void testFindAll03Pagination() {
-        List<Board> list = boardRepository.findAll03(1, 3);
+        List<Board> list = boardRepository.findAll03(0, 3);
         assertEquals(3, list.size());
     }
 
@@ -116,7 +116,7 @@ public class TestJpqlBoardRepository {
     public void testFindAll03PaginationAndLikeSearch() {
         String keyword = "내용";
 
-        List<Board> list = boardRepository.findAll03(keyword, 1, 3);
+        List<Board> list = boardRepository.findAll03(keyword, 0, 3);
         assertEquals(3, list.size());
     }
 

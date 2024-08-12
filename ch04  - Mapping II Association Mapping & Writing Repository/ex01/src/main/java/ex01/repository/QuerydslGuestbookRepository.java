@@ -11,11 +11,11 @@ import java.util.List;
 import static ex01.domain.QGuestbook.guestbook;
 
 @Repository
-public class QueryDslGuestbookRepository extends QuerydslRepositorySupport {
+public class QuerydslGuestbookRepository extends QuerydslRepositorySupport {
 
     private JPAQueryFactory queryFactory;
 
-    public QueryDslGuestbookRepository(JPAQueryFactory queryFactory) {
+    public QuerydslGuestbookRepository(JPAQueryFactory queryFactory) {
         super(Guestbook.class);
         this.queryFactory = queryFactory;
     }
