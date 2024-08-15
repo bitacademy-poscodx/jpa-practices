@@ -2,7 +2,7 @@ package ex03.repository.querydsl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import ex03.domain.Order;
+import ex03.domain.Orders;
 import ex03.domain.User;
 import ex03.domain.dto.UserDto;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -13,7 +13,7 @@ import static ex03.domain.QUser.user;
 
 public class QuerydslUserRepositoryImpl extends QuerydslRepositorySupport implements QuerydslUserRepository {
 
-    private JPAQueryFactory queryFactory;
+    private final JPAQueryFactory queryFactory;
 
     public QuerydslUserRepositoryImpl(JPAQueryFactory queryFactory) {
         super(User.class);
@@ -21,7 +21,7 @@ public class QuerydslUserRepositoryImpl extends QuerydslRepositorySupport implem
     }
 
     @Override
-    public UserDto findById02(Integer id){
+    public UserDto findById02(Integer id) {
         return queryFactory
                 .select(Projections.bean(UserDto.class, user.id, user.name))
                 .from(user)
@@ -42,24 +42,24 @@ public class QuerydslUserRepositoryImpl extends QuerydslRepositorySupport implem
     }
 
     @Override
-    public List<User> findAllCollectionJoinProblem(){
-        return (List<User>)queryFactory
+    public List<User> findAllCollectionJoinProblem() {
+        return queryFactory
                 .select(user)
                 .from(user)
                 .innerJoin(user.orders)
                 .fetch();
     }
 
-    public List<User> findAllCollectionJoinProblemSolved(){
-        return (List<User>)queryFactory
+    public List<User> findAllCollectionJoinProblemSolved() {
+        return queryFactory
                 .selectDistinct(user)
                 .from(user)
                 .innerJoin(user.orders)
                 .fetch();
     }
 
-    public List<User> findAllCollectionJoinAndNplusOneProblemSolved(){
-        return (List<User>)queryFactory
+    public List<User> findAllCollectionJoinAndNplusOneProblemSolved() {
+        return queryFactory
                 .selectDistinct(user)
                 .from(user)
                 .innerJoin(user.orders)
@@ -68,7 +68,7 @@ public class QuerydslUserRepositoryImpl extends QuerydslRepositorySupport implem
     }
 
     @Override
-    public List<Order> findOrdersById(Integer id) {
+    public List<Orders> findOrdersById02(Integer id) {
         return queryFactory
                 .selectDistinct(user)
                 .from(user)

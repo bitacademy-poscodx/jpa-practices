@@ -1,9 +1,10 @@
 package ex03.repository;
 
-import ex03.domain.Order;
+import ex03.domain.Orders;
 import ex03.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,28 +23,26 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestUerRepository {
-
-    private static User[] users = new User[] {new User("둘리"), new User("마이콜"), new User("또치")};
-    private static Order[] orders = new Order[] { new Order("order01"), new Order("order02"), new Order("order03"), new Order("order04"), new Order("order05"), new Order("order06")};
+    private static final User[] users = new User[]{new User("둘리"), new User("마이콜"), new User("또치")};
+    private static final Orders[] orders = new Orders[]{new Orders("order01"), new Orders("order02"), new Orders("order03"), new Orders("order04"), new Orders("order05"), new Orders("order06")};
 
     private static Long countOrders;
-
     private static Long countUsers;
 
-    @PersistenceContext
-    private EntityManager em;
+    @PersistenceUnit
+    private EntityManagerFactory emf;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrdersRepository orderRepository;
 
     @Test
-    @org.junit.jupiter.api.Order(0)
+    @Order(0)
     @Transactional
     @Rollback(false)
-    public void testSave(){
+    public void testSave() {
         userRepository.save(users[0]);
         assertNotNull(users[0].getId());
 
@@ -88,7 +87,7 @@ public class TestUerRepository {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(1)
+    @Order(1)
     @Transactional
     @Rollback(false)
     public void testUpdate() {
@@ -103,32 +102,32 @@ public class TestUerRepository {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(2)
+    @Order(2)
     @Transactional // for Divisioning JPQL Logs
     public void testFindOrderById() {
-        User user = userRepository.findOrderById(users[0].getId());
-        List<Order> orders = user.getOrders();
+        User user = userRepository.findOrdersById(users[0].getId());
+        List<Orders> orders = user.getOrders();
 
         assertEquals(3, orders.size());
     }
 
     @Test
-    @org.junit.jupiter.api.Order(3)
+    @Order(3)
     @Transactional // for Divisioning JPQL Logs
     public void testFindOrdersById() {
         User user = userRepository.findById(users[0].getId()).get();
-        List<Order> orders = user.getOrders();
+        List<Orders> orders = user.getOrders();
 
         assertEquals(3, orders.size());
     }
 
     @Test
-    @org.junit.jupiter.api.Order(4)
+    @Order(4)
     @Transactional // for Divisioning JPQL Logs
     public void testFindAllCollectionJoinProblem() {
         List<User> users = userRepository.findAllCollectionJoinProblem();
 
-        for(User user : users) {
+        for (User user : users) {
             System.out.println(user);
         }
 
@@ -137,12 +136,12 @@ public class TestUerRepository {
 
 
     @Test
-    @org.junit.jupiter.api.Order(5)
+    @Order(5)
     @Transactional // for Divisioning JPQL Logs
     public void testCollectionJoinProblemSolved() {
         List<User> users = userRepository.findAllCollectionJoinProblemSolved();
 
-        for(User user : users) {
+        for (User user : users) {
             System.out.println(user);
         }
 
@@ -150,7 +149,7 @@ public class TestUerRepository {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(6)
+    @Order(6)
     @Transactional // for Divisioning JPQL Logs
     public void testNplusOneProblem() {
         Integer qryCount = 0;
@@ -159,12 +158,12 @@ public class TestUerRepository {
         Integer orderCountExpected = countOrders.intValue();
         Integer N = countUsers.intValue();
 
-        List<User> users = userRepository.findAll(); qryCount++;
+        List<User> users = userRepository.findAll();
+        qryCount++;
 
-        for(User user : users) {
-            List<Order> orders = user.getOrders();
-
-            if(!em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(orders)) {
+        for (User user : users) {
+            List<Orders> orders = user.getOrders();
+            if (!emf.getPersistenceUnitUtil().isLoaded(orders)) {
                 qryCount++;
             }
 
@@ -172,12 +171,12 @@ public class TestUerRepository {
         }
 
         assertEquals(orderCountExpected, orderCountActual);
-        assertEquals(N+1, qryCount);
+        assertEquals(N + 1, qryCount);
     }
 
 
     @Test
-    @org.junit.jupiter.api.Order(7)
+    @Order(7)
     @Transactional // for Divisioning JPQL Logs
     public void testNplusOneProblemNotSolvedYet() {
         Integer qryCount = 0;
@@ -186,12 +185,13 @@ public class TestUerRepository {
         Integer orderCountExpected = countOrders.intValue();
         Integer N = countUsers.intValue();
 
-        List<User> users = userRepository.findAllCollectionJoinProblemSolved(); qryCount++;
+        List<User> users = userRepository.findAllCollectionJoinProblemSolved();
+        qryCount++;
 
-        for(User user : users) {
-            List<Order> result = user.getOrders();
+        for (User user : users) {
+            List<Orders> result = user.getOrders();
 
-            if(!em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(result)){
+            if (!emf.getPersistenceUnitUtil().isLoaded(result)) {
                 qryCount++;
             }
 
@@ -199,11 +199,11 @@ public class TestUerRepository {
         }
 
         assertEquals(orderCountExpected, orderCountActual);
-        assertEquals(N+1, qryCount);
+        assertEquals(N + 1, qryCount);
     }
 
     @Test
-    @org.junit.jupiter.api.Order(8)
+    @Order(8)
     @Transactional // for Divisioning JPQL Logs
     public void testNplusOneProblemSolved() {
         Integer qryCount = 0;
@@ -212,12 +212,13 @@ public class TestUerRepository {
         Integer orderCountExpected = countOrders.intValue();
         Integer N = countUsers.intValue();
 
-        List<User> users = userRepository.findAllCollectionJoinAndNplusOneProblemSolved(); qryCount++;
+        List<User> users = userRepository.findAllCollectionJoinAndNplusOneProblemSolved();
+        qryCount++;
 
-        for(User user : users) {
-            List<Order> result = user.getOrders();
+        for (User user : users) {
+            List<Orders> result = user.getOrders();
 
-            if(!em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(result)){
+            if (!emf.getPersistenceUnitUtil().isLoaded(result)) {
                 qryCount++;
             }
 
@@ -229,24 +230,24 @@ public class TestUerRepository {
     }
 
     @Test
-    @org.junit.jupiter.api.Order(9)
+    @Order(9)
     @Transactional
     @Rollback(false)
     public void testFindOrderByIdFinal() {
-        List<Order> orders = userRepository.findOrdersById(users[0].getId());
+        List<Orders> orders = userRepository.findOrdersById02(users[0].getId());
         assertEquals(3, orders.size());
     }
 
     @Test
-    @org.junit.jupiter.api.Order(100)
+    @Order(100)
     @Transactional
     @Rollback(false)
     public void cleanUp() {
-        for(Order order : orders) {
+        for (Orders order : orders) {
             orderRepository.deleteById(order.getId());
         }
 
-        for(User user : users) {
+        for (User user : users) {
             userRepository.deleteById(user.getId());
         }
     }

@@ -2,12 +2,13 @@ package ex03.domain.dto;
 
 import lombok.*;
 
-@Setter
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
-    private Integer id;
-    private String name;
+public class OrdersCountOfUserDto {
+    private Integer userId;
+    private Long orderCount;
+
 }

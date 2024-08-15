@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +62,7 @@ public class TestJpaGuestbookRepository {
     public void testFindAllSortByRegDateAsc() {
         List<Guestbook> list = guestbookRepository.findAll(Sort.by(Sort.Direction.ASC, "regDate"));
         assertEquals(countGuestbook, list.size());
+        SimpleJpaRepository a;
     }
 
     @Test

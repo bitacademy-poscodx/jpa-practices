@@ -1,7 +1,6 @@
 package ex03.domain;
 
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class User {
     private String phone = "000-0000-0000";
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Order> orders = new ArrayList<Order>();
+    private List<Orders> orders = new ArrayList<Orders>();
 
     @Override
     public String toString() {
