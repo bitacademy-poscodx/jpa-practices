@@ -3,8 +3,6 @@ package ex10.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -24,6 +22,6 @@ public class Genre {
     private String name;
 
     @NonNull
-    @Column(name = "abbr", nullable = false, length = 10)
-    private String abbr;
+    @Column(name = "abbr_name", nullable = false, length = 10)
+    private String abbrName;
 }

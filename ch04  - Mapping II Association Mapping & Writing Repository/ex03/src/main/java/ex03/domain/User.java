@@ -32,7 +32,7 @@ public class User {
     private String phone = "000-0000-0000";
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Orders> orders = new ArrayList<Orders>();
+    private List<Orders> orders = new ArrayList<>();
 
     @Override
     public String toString() {

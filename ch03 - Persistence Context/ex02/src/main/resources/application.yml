@@ -1,7 +1,7 @@
 # spring configuration
 spring:
   application:
-    name: ex01
+    name: ex02
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver

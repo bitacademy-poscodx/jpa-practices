@@ -1,16 +1,21 @@
 # spring configuration
 spring:
   application:
-    name: ex02
+    name: ex11
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://192.168.66.4:3306/webdb?charset=utf8
-    username: webdb
-    password: webdb
+    url: jdbc:mariadb://192.168.66.4:3306/cdmall?charset=utf8
+    username: cdmall
+    password: cdmall
     hikari:
       minimum-idle: 10
       maximum-pool-size: 20
+
+  data:
+    jpa:
+      repositories:
+        enabled: true
 
   jpa:
     open-in-view: false
