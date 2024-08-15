@@ -7,15 +7,21 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface QuerydslBoardRepository {
-    public BoardDto findById02(Integer id);
-    public List<Board> findAllByOrderByRegDateDesc02();
-    public List<BoardDto> findAllByOrderByRegDateDesc03();
-    public List<BoardDto> findAllByOrderByRegDateDesc03(Integer page, Integer size);
-    public List<BoardDto> findAll02(Pageable pageable);
-    public List<BoardDto> findAll02(String keyword, Pageable pageable);
+    BoardDto findById02(Integer id);
 
-    public Long update(Board board);
+    List<Board> findAllByOrderByRegDateDesc02();
 
-    public Long delete(Integer id);
-    public Long delete(Integer id, Integer userId);
+    List<BoardDto> findAllByOrderByRegDateDesc03();
+
+    List<BoardDto> findAllByOrderByRegDateDesc03(Integer page, Integer size);
+
+    List<BoardDto> findAll02(Pageable pageable);
+
+    List<BoardDto> findAll02(String keyword, Pageable pageable);
+
+    Long update(Board board);
+
+    Long delete(Integer id);
+
+    Long delete(Integer id, Integer userId);
 }

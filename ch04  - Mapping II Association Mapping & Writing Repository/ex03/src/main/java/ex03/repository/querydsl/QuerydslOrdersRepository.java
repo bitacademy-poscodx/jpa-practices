@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface QuerydslOrdersRepository {
     List<Orders> findAllByUserId02(Integer userId);
+
     List<Orders> findAllByUserId02(Integer userId, Sort sort);
+
     List<Orders> findAllByUserId02(Integer userId, Pageable pageable);
 
     List<OrdersCountOfUserDto> countAllGroupByUser();
