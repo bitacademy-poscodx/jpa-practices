@@ -9,3 +9,4 @@ import java.util.List;
 public interface JpaBoardRepository extends JpaRepository<Board, Integer>, QuerydslBoardRepository {
     List<Board> findAllByOrderByRegDateDesc();
 }
+

@@ -78,7 +78,7 @@
                             <goal>process</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>src/main/generated</outputDirectory>
+                            <outputDirectory>${basedir}/target/generated-sources/annotations</outputDirectory>
                             <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
                             <options>
                                 <querydsl.entityAccessors>true</querydsl.entityAccessors>

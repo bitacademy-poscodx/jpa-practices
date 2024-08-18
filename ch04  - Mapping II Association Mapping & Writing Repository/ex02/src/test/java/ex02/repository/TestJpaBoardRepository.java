@@ -16,8 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -77,8 +79,8 @@ public class TestJpaBoardRepository {
     @Test
     @Order(2)
     @Transactional // for Divisioning JPQL Logs
-    public void testFindById02() {
-        BoardDto board = boardRepository.findById02(board03.getId());
+    public void testFindByIdWithProjection() {
+        BoardDto board = boardRepository.findById(BoardDto.class, board03.getId());
 
         assertNotNull(board);
         assertEquals("김정자", board.getUserName());
@@ -95,43 +97,45 @@ public class TestJpaBoardRepository {
     @Test
     @Order(4)
     @Transactional // for Divisioning JPQL Logs
-    public void testFindAllByOrderByRegDateDesc02() {
-        List<Board> boards = boardRepository.findAllByOrderByRegDateDesc02();
+    public void testFindAllWithSort() {
+        List<Board> boards = boardRepository.findAll(Sort.Order.desc("regDate"));
         assertEquals(countBoard, boards.size());
     }
 
     @Test
     @Order(5)
     @Transactional // for Divisioning JPQL Logs
-    public void testFindAllByOrderByRegDateDesc03(){
-        List<BoardDto> boardDtos = boardRepository.findAllByOrderByRegDateDesc03();
-        assertEquals(countBoard, boardDtos.size());
+    public void testFindAllWithProjectionAndSort(){
+        List<BoardDto> boards = boardRepository.findAll(BoardDto.class, Sort.Order.desc("regDate"));
+        assertEquals(countBoard, boards.size());
     }
 
     @Test
     @Order(6)
     @Transactional // for Divisioning JPQL Logs
-    public void test07FindAllByOrderByRegDateDesc3(){
-        List<BoardDto> boards = boardRepository.findAllByOrderByRegDateDesc03(0, 4);
+    public void testFindAllWithProjectionAndPaginationAndSort01(){
+        List<BoardDto> boards = boardRepository.findAll(BoardDto.class, 1, 4, Sort.Order.desc("regDate"));
         assertEquals(4, boards.size());
     }
+
 
     @Test
     @Order(7)
     @Transactional // for Divisioning JPQL Logs
-    public void testFindAll02Pagination(){
-        List<BoardDto> boards = boardRepository.findAll02(PageRequest.of(0, 4, Sort.Direction.DESC, "regDate"));
+    public void testFindAllWithProjectionAndPaginationAndSort02(){
+        List<BoardDto> boards = boardRepository.findAll(BoardDto.class, PageRequest.of(1, 4, Sort.Direction.DESC, "regDate"));
         assertEquals(4, boards.size());
     }
 
     @Test
     @Order(8)
     @Transactional // for Divisioning JPQL Logs
-    public void testFindAll02PaginationAndLikeSearching(){
-        List<BoardDto> boards = boardRepository.findAll02("내용", PageRequest.of(0, 4, Sort.Direction.DESC, "regDate"));
+    public void testFindAllByTitleContaingAndContentsContaining(){
+        List<BoardDto> boards = boardRepository.findAllByTitleContainingOrContentsContaining(BoardDto.class, "테스트", "내용", PageRequest.of(1, 4, Sort.Direction.DESC, "regDate"));
         assertEquals(4, boards.size());
     }
 
+    /*
     @Test
     @Order(9)
     @Transactional
@@ -196,4 +200,6 @@ public class TestJpaBoardRepository {
         userRepository.deleteById(user01.getId());
         userRepository.deleteById(user02.getId());
     }
+
+ */
 }

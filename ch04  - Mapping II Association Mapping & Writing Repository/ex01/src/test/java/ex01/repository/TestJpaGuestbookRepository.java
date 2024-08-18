@@ -11,13 +11,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -50,34 +50,33 @@ public class TestJpaGuestbookRepository {
 
     @Test
     @Order(1)
-    @Transactional //  for Divisioning JPQL Logs
+    @Transactional // for Divisioning JPQL Logs
     public void testFindAll() {
         List<Guestbook> list = guestbookRepository.findAll();
-        assertEquals(countGuestbook, list.size());
+        assertThat(list.size()).isEqualTo(countGuestbook.intValue());
     }
 
     @Test
     @Order(2)
-    @Transactional //  for Divisioning JPQL Logs
-    public void testFindAllSortByRegDateAsc() {
+    @Transactional // for Divisioning JPQL Logs
+    public void testFindAllWithSort() {
         List<Guestbook> list = guestbookRepository.findAll(Sort.by(Sort.Direction.ASC, "regDate"));
-        assertEquals(countGuestbook, list.size());
-        SimpleJpaRepository a;
+        assertThat(list.size()).isEqualTo(countGuestbook.intValue());
     }
 
     @Test
     @Order(3)
-    @Transactional //  for Divisioning JPQL Logs
-    public void testFindAllPagination() {
+    @Transactional // for Divisioning JPQL Logs
+    public void testFindAllWithPageRequest() {
         Page<Guestbook> page = guestbookRepository.findAll(PageRequest.of(0, 2, Sort.Direction.DESC, "regDate"));
         List<Guestbook> list = page.getContent();
-        assertEquals(2, list.size());
+        assertThat(list.size()).isEqualTo(2);
     }
 
     @Test
     @Order(4)
-    @Transactional //  for Divisioning JPQL Logs
-    public void testFindAllByOrderByRegDateDesc() {
+    @Transactional // for Divisioning JPQL Logs
+    public void testFindAllOrderByRegDateDesc() {
         List<Guestbook> list = guestbookRepository.findAllByOrderByRegDateDesc();
         assertEquals(countGuestbook, list.size());
     }
@@ -86,7 +85,7 @@ public class TestJpaGuestbookRepository {
     @Order(5)
     @Transactional
     @Rollback(false)
-    public void testFindByIdAndDelete() {
+    public void testDelete() {
         Guestbook guestbook = guestbookRepository.findById(guesbookMock01.getId()).orElse(null);
         assertNotNull(guestbook);
 
@@ -108,6 +107,7 @@ public class TestJpaGuestbookRepository {
     @Transactional
     @Rollback(false)
     public void testDeleteByIdAndPassword() {
-        assertEquals(1, guestbookRepository.deleteByIdAndPassword(guesbookMock03.getId(), "1234"));
+        Integer count = guestbookRepository.deleteByIdAndPassword(guesbookMock03.getId(), "1234");
+        assertEquals(1, count);
     }
 }

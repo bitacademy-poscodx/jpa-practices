@@ -1,23 +1,35 @@
 package ex02.repository.guerydsl;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import ex02.domain.Board;
-import ex02.domain.dto.BoardDto;
+import ex02.domain.dto.FieldPath;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static com.querydsl.core.types.Order.ASC;
+import static com.querydsl.core.types.Order.DESC;
 import static ex02.domain.QBoard.board;
 
+@Slf4j
+@Repository
 public class QuerydslBoardRepositoryImpl extends QuerydslRepositorySupport implements QuerydslBoardRepository {
 
-    private JPAQueryFactory queryFactory;
+    private final JPAQueryFactory queryFactory;
 
     public QuerydslBoardRepositoryImpl(JPAQueryFactory queryFactory) {
         super(Board.class);
@@ -25,9 +37,17 @@ public class QuerydslBoardRepositoryImpl extends QuerydslRepositorySupport imple
     }
 
     @Override
-    public BoardDto findById02(Integer id) {
+    public <R> R findById(Class<R> classDto, Integer id) {
         return queryFactory
-                .select(Projections.fields(BoardDto.class, board.id, board.hit, board.title, board.contents, board.regDate, board.user().name.as("userName")))
+                .select(Projections.fields(classDto, Arrays.stream(classDto.getDeclaredFields()).collect(Collectors.toMap(Field::getName, field -> {
+                    String fieldName = Optional
+                            .ofNullable(field.getAnnotation(FieldPath.class))
+                            .filter(f -> !"".equals(f.value()))
+                            .map(FieldPath::value)
+                            .orElse(field.getName());
+
+                    return new PathBuilder<>(Object.class, "board").get(fieldName, field.getType());
+                }))))
                 .from(board)
                 .innerJoin(board.user())
                 .where(board.id.eq(id))
@@ -35,73 +55,90 @@ public class QuerydslBoardRepositoryImpl extends QuerydslRepositorySupport imple
     }
 
     @Override
-    public List<Board> findAllByOrderByRegDateDesc02() {
-        return queryFactory
-                .select(board)
-                .from(board)
-                .innerJoin(board.user()).fetchJoin()
-                .orderBy(board.regDate.desc())
-                .fetch();
+    public List<Board> findAll(Sort.Order... orders) {
+        return _findAll(Optional.empty(), Optional.empty(), Optional.empty(), orders);
     }
 
     @Override
-    public List<BoardDto> findAllByOrderByRegDateDesc03() {
-        return queryFactory
-                .select(Projections.fields(BoardDto.class, board.id, board.hit, board.title, board.contents, board.regDate, board.user().name.as("userName")))
-                .from(board)
+    public List<Board> findAll(int page, int size, Sort.Order... orders) {
+        return _findAll(Optional.empty(), Optional.of(page), Optional.of(size), orders);
+    }
+
+    @Override
+    public List<Board> findAllByTitleContainingOrContentsContaining(String title, String contents, int page, int size, Sort.Order... orders) {
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.andAnyOf(Optional.ofNullable(title).map(board.title::contains).orElse(null), Optional.ofNullable(contents).map(board.contents::contains).orElse(null));
+
+        return _findAll(Optional.of(builder), Optional.of(page), Optional.of(size), orders);
+    }
+
+    @Override
+    public <R> List<R> findAll(Class<R> classDto, Sort.Order... orders) {
+        return _findAll(classDto, Optional.empty(), Optional.empty(), Optional.empty(), orders);
+    }
+
+    @Override
+    public <R> List<R> findAll(Class<R> classDto, int page, int size, Sort.Order... orders) {
+        return _findAll(classDto, Optional.empty(), Optional.of(page), Optional.of(size), orders);
+    }
+
+    @Override
+    public <R> List<R> findAll(Class<R> classDto, Pageable pageable) {
+        return findAll(classDto, pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort().stream().toArray(Sort.Order[]::new));
+    }
+
+    @Override
+    public <R> List<R> findAllByTitleContainingOrContentsContaining(Class<R> classDto, String title, String contents, int page, int size, Sort.Order... orders) {
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.andAnyOf(Optional.ofNullable(title).map(board.title::contains).orElse(null), Optional.ofNullable(contents).map(board.contents::contains).orElse(null));
+
+        return _findAll(classDto, Optional.of(builder), Optional.of(page), Optional.of(size), orders);
+    }
+
+    @Override
+    public <R> List<R> findAllByTitleContainingOrContentsContaining(Class<R> classDto, String title, String contents, Pageable pageable) {
+        return findAllByTitleContainingOrContentsContaining(classDto, title, contents, pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort().stream().toArray(Sort.Order[]::new));
+    }
+
+    private List<Board> _findAll(Optional<BooleanBuilder> builder, Optional<Integer> page, Optional<Integer> size, Sort.Order... orders) {
+        final JPAQuery<Board> query = queryFactory
+                .selectFrom(board)
                 .innerJoin(board.user())
-                .orderBy(board.regDate.desc())
-                .fetch();
-    }
+                .fetchJoin()
+                .where(builder.orElseGet(BooleanBuilder::new))
+                .orderBy(Arrays
+                        .stream(orders)
+                        .map(o -> new OrderSpecifier(o.isAscending() ? ASC : DESC, Expressions.path(Board.class, board, o.getProperty())))
+                        .toArray(OrderSpecifier[]::new));
 
-    @Override
-    public List<BoardDto> findAllByOrderByRegDateDesc03(Integer page, Integer size) {
-        return queryFactory
-                .select(Projections.fields(BoardDto.class, board.id, board.hit, board.title, board.contents, board.regDate, board.user().name.as("userName")))
-                .from(board)
-                .innerJoin(board.user())
-                .orderBy(board.regDate.desc())
-                .offset(page * size)
-                .limit(size)
-                .fetch();
-    }
-
-    @Override
-    public List<BoardDto> findAll02(Pageable pageable) {
-        JPAQuery<BoardDto> query = queryFactory
-                .select(Projections.fields(BoardDto.class, board.id, board.hit, board.title, board.contents, board.regDate, board.user().name.as("userName")))
-                .from(board)
-                .innerJoin(board.user());
-
-        if (pageable != null) {
-            query.offset(pageable.getOffset());
-            query.limit(pageable.getPageSize());
-
-            for (Sort.Order o : pageable.getSort()) {
-                PathBuilder orderByExpression = new PathBuilder(Board.class, "board");
-                query.orderBy(new OrderSpecifier(o.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC, orderByExpression.get(o.getProperty())));
-            }
-        }
+        page.ifPresent(pg -> query.offset((long) (pg - 1) * size.orElse(0)));
+        size.ifPresent(query::limit);
 
         return query.fetch();
     }
 
-    @Override
-    public List<BoardDto> findAll02(String keyword, Pageable pageable) {
-        JPAQuery<BoardDto> query = queryFactory
-                .select(Projections.fields(BoardDto.class, board.id, board.hit, board.title, board.contents, board.regDate, board.user().name.as("userName")))
+    private <R> List<R> _findAll(Class<R> classDto, Optional<BooleanBuilder> builder, Optional<Integer> page, Optional<Integer> size, Sort.Order... orders) {
+        JPAQuery<R> query = queryFactory
+                .select(Projections.fields(classDto, Arrays.stream(classDto.getDeclaredFields()).collect(Collectors.toMap(Field::getName, field -> {
+                    String fieldName = Optional
+                            .ofNullable(field.getAnnotation(FieldPath.class))
+                            .filter(f -> !"".equals(f.value()))
+                            .map(FieldPath::value)
+                            .orElse(field.getName());
+
+                    return new PathBuilder<>(Object.class, "board").get(fieldName, field.getType());
+                }))))
                 .from(board)
                 .innerJoin(board.user())
-                .where(board.title.contains(keyword).or(board.contents.contains(keyword)));
+                .where(builder.orElseGet(BooleanBuilder::new))
+                .orderBy(Arrays
+                        .stream(orders)
+                        // .map(o -> new OrderSpecifier(o.isAscending() ? ASC : DESC, new PathBuilder(Board.class, "board").get(o.getProperty())))
+                        .map(o -> new OrderSpecifier(o.isAscending() ? ASC : DESC, Expressions.path(Board.class, board, o.getProperty())))
+                        .toArray(OrderSpecifier[]::new));
 
-        if (pageable != null) {
-            query.offset(pageable.getOffset());
-            query.limit(pageable.getPageSize());
-            for (Sort.Order o : pageable.getSort()) {
-                PathBuilder orderByExpression = new PathBuilder(Board.class, "board");
-                query.orderBy(new OrderSpecifier(o.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC, orderByExpression.get(o.getProperty())));
-            }
-        }
+        page.ifPresent(pg -> query.offset((long) (pg - 1) * size.orElse(0)));
+        size.ifPresent(query::limit);
 
         return query.fetch();
     }

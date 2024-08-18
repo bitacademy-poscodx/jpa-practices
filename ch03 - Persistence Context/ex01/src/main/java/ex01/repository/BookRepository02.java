@@ -9,6 +9,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
+import java.util.Objects;
 
 @Slf4j
 @Repository
@@ -19,7 +20,7 @@ public class BookRepository02 {
 
     public void save(Book book) {
         EntityManagerHolder emHolder = (EntityManagerHolder) TransactionSynchronizationManager.getResource(emf);
-        EntityManager em = emHolder.getEntityManager();
+        EntityManager em = Objects.requireNonNull(emHolder).getEntityManager();
 
         em.persist(book);
     }

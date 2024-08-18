@@ -38,17 +38,17 @@ public class TestJpqlGuestbookRepository {
 
     @Test
     @Order(1)
-    @Transactional //  for Divisioning JPQL Logs
-    public void testFindAll01() {
-        List<Guestbook> list = guestbookRepository.findAll01();
+    @Transactional // for Divisioning JPQL Logs
+    public void testFindAll() {
+        List<Guestbook> list = guestbookRepository.findAll();
         assertEquals(guestbookRepository.count(), list.size());
     }
 
     @Test
     @Order(2)
-    @Transactional //  for Divisioning JPQL Logs
-    public void testFindAll02() {
-        List<GuestbookDto> list = guestbookRepository.findAll02();
+    @Transactional // for Divisioning JPQL Logs
+    public void testFindAllInJpql() {
+        List<GuestbookDto> list = guestbookRepository.findAllInJpql();
         assertEquals(guestbookRepository.count(), list.size());
     }
 
@@ -56,7 +56,8 @@ public class TestJpqlGuestbookRepository {
     @Order(3)
     @Transactional
     @Rollback(false)
-    public void testDelete() {
-        assertEquals(1, guestbookRepository.delete(guesbookMock.getId(), "1234"));
+    public void testDeleteByIdAndPassword() {
+        Integer count = guestbookRepository.deleteByIdAndPassword(guesbookMock.getId(), "1234");
+        assertEquals(1, count);
     }
 }

@@ -4,11 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import javax.persistence.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Slf4j
 @SpringBootTest
@@ -45,13 +43,13 @@ public class TestTransactionBoundary01 {
     @Order(1)
     void testInEntityTransactionBoundary() {
         EntityManager em = emf.createEntityManager();
-        assertNotNull(em.find(Book.class, "book01"));
+        assertThat(em.find(Book.class, "book01")).isNotNull();
     }
 
     @Test
     @Order(2)
     void testNotInEntityTransactionBoundary() {
         EntityManager em = emf.createEntityManager();
-        assertNull(em.find(Book.class, "book02"));
+        assertThat(em.find(Book.class, "book02")).isNull();
     }
 }

@@ -1,8 +1,5 @@
 package ex11.domain.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.StringPath;
 import lombok.*;
 
 @Setter

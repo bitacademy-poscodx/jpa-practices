@@ -15,13 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestQueryDslGuestbookRepository {
+public class TestQuerydslGuestbookRepository {
     private static final Guestbook guesbookMock = new Guestbook("고길동", "1234", "안녕", new Date());
 
     @Autowired
@@ -38,17 +38,17 @@ public class TestQueryDslGuestbookRepository {
 
     @Test
     @Order(1)
-    @Transactional //  for Divisioning JPQL Logs
-    public void testFindAll01() {
-        List<Guestbook> list = guestbookRepository.findAll01();
+    @Transactional // for Divisioning JPQL Logs
+    public void testFindAll() {
+        List<Guestbook> list = guestbookRepository.findAll();
         assertEquals(guestbookRepository.count(), list.size());
     }
 
     @Test
     @Order(2)
-    @Transactional //  for Divisioning JPQL Logs
-    public void testFindAll02() {
-        List<GuestbookDto> list = guestbookRepository.findAll02();
+    @Transactional // for Divisioning JPQL Logs
+    public void testFindAllWithProjection() {
+        List<GuestbookDto> list = guestbookRepository.findAllWithProjection();
         assertEquals(guestbookRepository.count(), list.size());
     }
 
@@ -56,7 +56,8 @@ public class TestQueryDslGuestbookRepository {
     @Order(3)
     @Transactional
     @Rollback(false)
-    public void testDelete() {
-        assertEquals(1, guestbookRepository.delete(guesbookMock.getId(), "1234"));
+    public void testDeleteByIdAndPassword() {
+        Long count = guestbookRepository.deleteByIdAndPassword(guesbookMock.getId(), "1234");
+        assertEquals(1, count);
     }
 }

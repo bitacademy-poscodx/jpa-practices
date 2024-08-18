@@ -1,23 +1,29 @@
 package ex02.repository.guerydsl;
 
 import ex02.domain.Board;
-import ex02.domain.dto.BoardDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
 public interface QuerydslBoardRepository {
-    BoardDto findById02(Integer id);
+    <R> R findById(Class<R> clazzDto, Integer id);
 
-    List<Board> findAllByOrderByRegDateDesc02();
+    List<Board> findAll(Sort.Order... orders);
 
-    List<BoardDto> findAllByOrderByRegDateDesc03();
+    List<Board> findAll(int page, int size, Sort.Order... orders);
 
-    List<BoardDto> findAllByOrderByRegDateDesc03(Integer page, Integer size);
+    List<Board> findAllByTitleContainingOrContentsContaining(String title, String contents, int page, int size, Sort.Order... orders);
 
-    List<BoardDto> findAll02(Pageable pageable);
+    <R> List<R> findAll(Class<R> classDto, Sort.Order... orders);
 
-    List<BoardDto> findAll02(String keyword, Pageable pageable);
+    <R> List<R> findAll(Class<R> classDto, int page, int size, Sort.Order... orders);
+
+    <R> List<R> findAll(Class<R> classDto, Pageable pageable);
+
+    <R> List<R> findAllByTitleContainingOrContentsContaining(Class<R> classDto, String title, String contents, int page, int size, Sort.Order... orders);
+
+    <R> List<R> findAllByTitleContainingOrContentsContaining(Class<R> classDto, String title, String contents, Pageable pageable);
 
     Long update(Board board);
 

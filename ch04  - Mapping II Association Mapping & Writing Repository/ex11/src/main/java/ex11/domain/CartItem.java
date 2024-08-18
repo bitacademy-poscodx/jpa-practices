@@ -1,9 +1,8 @@
 package ex11.domain;
 
 import ex11.domain.identifier.CartItemId;
+import jakarta.persistence.*;
 import lombok.*;
-
-import javax.persistence.*;
 
 @Setter
 @Getter

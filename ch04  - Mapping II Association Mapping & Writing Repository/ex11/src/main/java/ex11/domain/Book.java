@@ -1,11 +1,7 @@
 package ex11.domain;
 
+import jakarta.persistence.*;
 import lombok.*;
-import org.checkerframework.checker.units.qual.A;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter

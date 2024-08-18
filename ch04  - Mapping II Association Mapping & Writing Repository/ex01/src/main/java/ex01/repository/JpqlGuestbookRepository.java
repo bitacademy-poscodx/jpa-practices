@@ -3,6 +3,7 @@ package ex01.repository;
 import ex01.domain.Guestbook;
 import ex01.domain.dto.GuestbookDto;
 import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -14,37 +15,37 @@ public class JpqlGuestbookRepository {
     @PersistenceContext
     private EntityManager em;
 
-    // 저장
     public void save(Guestbook guestbook) {
         em.persist(guestbook);
     }
 
-    // 삭제
-    public Integer delete(Integer id, String password) {
-        String qlString = "delete from Guestbook gb where gb.id=:id and gb.password=:password";
-        Query query = em.createQuery(qlString);
+    public Integer deleteByIdAndPassword(Integer id, String password) {
+        String jpql = "delete from Guestbook gb where gb.id=:id and gb.password=:password";
+        Query query = em.createQuery(jpql);
+
         query.setParameter("id", id);
         query.setParameter("password", password);
         return query.executeUpdate();
     }
 
-    // 조회01
-    public List<Guestbook> findAll01() {
-        String qlString = "select gb from Guestbook gb order by gb.regDate desc";
-        TypedQuery<Guestbook> query = em.createQuery(qlString, Guestbook.class);
+    public List<Guestbook> findAll() {
+        String jpql = "select gb from Guestbook gb order by gb.regDate desc";
+        TypedQuery<Guestbook> query = em.createQuery(jpql, Guestbook.class);
+
         return query.getResultList();
     }
 
-    // 조회02: projection
-    public List<GuestbookDto> findAll02() {
-        String qlString = "select new ex01.domain.dto.GuestbookDto(gb.id, gb.name, gb.contents, gb.regDate) from Guestbook gb order by gb.regDate desc";
-        TypedQuery<GuestbookDto> query = em.createQuery(qlString, GuestbookDto.class);
+    public List<GuestbookDto> findAllInJpql() {
+        String jpql = "select new ex01.domain.dto.GuestbookDto(gb.id, gb.name, gb.contents, gb.regDate) from Guestbook gb order by gb.regDate desc";
+        TypedQuery<GuestbookDto> query = em.createQuery(jpql, GuestbookDto.class);
+
         return query.getResultList();
     }
 
-    // count
     public Long count() {
-        TypedQuery<Long> query = em.createQuery("select count(gb) from Guestbook gb", Long.class);
+        String jpql = "select count(*) from Guestbook";
+        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+
         return query.getSingleResult();
     }
 }
