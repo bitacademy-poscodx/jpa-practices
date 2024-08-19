@@ -9,13 +9,12 @@ import javax.persistence.PersistenceContext;
 
 @Slf4j
 @Repository
-public class BookRepository03 {
-
+public class BookRepository04 {
     @PersistenceContext
     private EntityManager em;
 
     public void save(Book book) {
-        log.info("BookRepository03.save book: {}", book);
+        log.info("BookRepository04.save book: {}", book);
         em.persist(book);
     }
 }

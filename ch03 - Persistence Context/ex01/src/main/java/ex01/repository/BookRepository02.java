@@ -18,10 +18,19 @@ public class BookRepository02 {
     @PersistenceUnit
     private EntityManagerFactory emf;
 
-    public void save(Book book) {
+    public void successSave(Book book) {
+        log.info("BookRepository02.successSave book: {}", book);
+
         EntityManagerHolder emHolder = (EntityManagerHolder) TransactionSynchronizationManager.getResource(emf);
         EntityManager em = Objects.requireNonNull(emHolder).getEntityManager();
-
         em.persist(book);
     }
+
+    public void failSave(Book book) {
+        log.info("BookRepository02.failSave book: {}", book);
+
+        EntityManager em = emf.createEntityManager();
+        em.persist(book);
+    }
+
 }

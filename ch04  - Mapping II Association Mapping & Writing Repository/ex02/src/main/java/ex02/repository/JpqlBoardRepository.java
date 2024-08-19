@@ -21,11 +21,11 @@ public class JpqlBoardRepository {
         em.persist(board);
     }
 
-    public Board findById(Integer id) {
+    public Board findById(int id) {
         return em.find(Board.class, id);
     }
 
-    public Board findByIdInJpql(Integer id) {
+    public Board findByIdInJpql(int id) {
         String qlString = "select b from Board b where b.id = :id";
         TypedQuery<Board> query = em.createQuery(qlString, Board.class);
 
@@ -54,7 +54,7 @@ public class JpqlBoardRepository {
         return query.getResultList();
     }
 
-    public List<Board> findAllWithFetchJoinAndPagination(Integer page, Integer size) {
+    public List<Board> findAllWithFetchJoinAndPagination(int page, int size) {
         String jpql = "select b from Board b join fetch b.user order by b.regDate desc";
         TypedQuery<Board> query = em.createQuery(jpql, Board.class);
 
@@ -64,7 +64,7 @@ public class JpqlBoardRepository {
         return query.getResultList();
     }
 
-    public List<Board> findAllWithFetchJoinAndPaginationAndLikeSearch(String keyword, Integer page, Integer size) {
+    public List<Board> findAllWithFetchJoinAndPaginationAndLikeSearch(String keyword, int page, int size) {
         String jpql = "select b from Board b join fetch b.user where b.title like :keywordContains or b.contents like :keywordContains order by b.regDate desc";
         TypedQuery<Board> query = em.createQuery(jpql, Board.class);
 
@@ -86,7 +86,7 @@ public class JpqlBoardRepository {
         return boardPersisted;
     }
 
-    public Integer updateInJpql(Board board) {
+    public int updateInJpql(Board board) {
         String jpql = "update Board b set b.title=:title, b.contents=:contents where b.id=:id";
         Query query = em.createQuery(jpql);
 
@@ -96,12 +96,12 @@ public class JpqlBoardRepository {
         return query.executeUpdate();
     }
 
-    public void deleteById(Integer id) {
+    public void deleteById(int id) {
         Board board = em.find(Board.class, id);
         em.remove(board);
     }
 
-    public Integer deleteByIdInJpql(Integer id) {
+    public int deleteByIdInJpql(int id) {
         String jpql = "delete from Board b where b.id=:id";
         Query query = em.createQuery(jpql);
 
@@ -109,7 +109,7 @@ public class JpqlBoardRepository {
         return query.executeUpdate();
     }
 
-    public Integer deleteByIdAndUserId(Integer id, Integer userId) {
+    public int deleteByIdAndUserId(int id, int userId) {
         String jpql = "delete from Board b where b.id = ?1 and b.user.id = ?2";
         Query query = em.createQuery(jpql);
 

@@ -50,11 +50,11 @@ public class TestEntityLifeCycle01 {
     void testFind() {
         EntityManager em = emf.createEntityManager();
 
-        // JPQ O: 그리고 1차 캐시에 저장됨
+        // JPQL o: 1차 캐시에 저장됨
         Book book01 = em.find(Book.class, "book");
         assertNotNull(book01);
 
-        // JPQ X: 1차 캐시에서 가져옴
+        // JPQL x: 1차 캐시에서 가져옴
         Book book02 = em.find(Book.class, "book");
         assertTrue(book01 == book02);
 
@@ -94,5 +94,4 @@ public class TestEntityLifeCycle01 {
 
         em.close();
     }
-
 }

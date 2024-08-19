@@ -37,7 +37,7 @@ public class QuerydslBoardRepositoryImpl extends QuerydslRepositorySupport imple
     }
 
     @Override
-    public <R> R findById(Class<R> classDto, Integer id) {
+    public <T> T findById(Class<T> classDto, Integer id) {
         return queryFactory
                 .select(Projections.fields(classDto, Arrays.stream(classDto.getDeclaredFields()).collect(Collectors.toMap(Field::getName, field -> {
                     String fieldName = Optional
@@ -73,22 +73,22 @@ public class QuerydslBoardRepositoryImpl extends QuerydslRepositorySupport imple
     }
 
     @Override
-    public <R> List<R> findAll(Class<R> classDto, Sort.Order... orders) {
+    public <T> List<T> findAll(Class<T> classDto, Sort.Order... orders) {
         return _findAll(classDto, Optional.empty(), Optional.empty(), Optional.empty(), orders);
     }
 
     @Override
-    public <R> List<R> findAll(Class<R> classDto, int page, int size, Sort.Order... orders) {
+    public <T> List<T> findAll(Class<T> classDto, int page, int size, Sort.Order... orders) {
         return _findAll(classDto, Optional.empty(), Optional.of(page), Optional.of(size), orders);
     }
 
     @Override
-    public <R> List<R> findAll(Class<R> classDto, Pageable pageable) {
+    public <T> List<T> findAll(Class<T> classDto, Pageable pageable) {
         return findAll(classDto, pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort().stream().toArray(Sort.Order[]::new));
     }
 
     @Override
-    public <R> List<R> findAllByTitleContainingOrContentsContaining(Class<R> classDto, String title, String contents, int page, int size, Sort.Order... orders) {
+    public <T> List<T> findAllByTitleContainingOrContentsContaining(Class<T> classDto, String title, String contents, int page, int size, Sort.Order... orders) {
         BooleanBuilder builder = new BooleanBuilder();
         builder.andAnyOf(Optional.ofNullable(title).map(board.title::contains).orElse(null), Optional.ofNullable(contents).map(board.contents::contains).orElse(null));
 
@@ -96,7 +96,7 @@ public class QuerydslBoardRepositoryImpl extends QuerydslRepositorySupport imple
     }
 
     @Override
-    public <R> List<R> findAllByTitleContainingOrContentsContaining(Class<R> classDto, String title, String contents, Pageable pageable) {
+    public <T> List<T> findAllByTitleContainingOrContentsContaining(Class<T> classDto, String title, String contents, Pageable pageable) {
         return findAllByTitleContainingOrContentsContaining(classDto, title, contents, pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort().stream().toArray(Sort.Order[]::new));
     }
 
@@ -117,8 +117,8 @@ public class QuerydslBoardRepositoryImpl extends QuerydslRepositorySupport imple
         return query.fetch();
     }
 
-    private <R> List<R> _findAll(Class<R> classDto, Optional<BooleanBuilder> builder, Optional<Integer> page, Optional<Integer> size, Sort.Order... orders) {
-        JPAQuery<R> query = queryFactory
+    private <T> List<T> _findAll(Class<T> classDto, Optional<BooleanBuilder> builder, Optional<Integer> page, Optional<Integer> size, Sort.Order... orders) {
+        JPAQuery<T> query = queryFactory
                 .select(Projections.fields(classDto, Arrays.stream(classDto.getDeclaredFields()).collect(Collectors.toMap(Field::getName, field -> {
                     String fieldName = Optional
                             .ofNullable(field.getAnnotation(FieldPath.class))
@@ -133,7 +133,6 @@ public class QuerydslBoardRepositoryImpl extends QuerydslRepositorySupport imple
                 .where(builder.orElseGet(BooleanBuilder::new))
                 .orderBy(Arrays
                         .stream(orders)
-                        // .map(o -> new OrderSpecifier(o.isAscending() ? ASC : DESC, new PathBuilder(Board.class, "board").get(o.getProperty())))
                         .map(o -> new OrderSpecifier(o.isAscending() ? ASC : DESC, Expressions.path(Board.class, board, o.getProperty())))
                         .toArray(OrderSpecifier[]::new));
 

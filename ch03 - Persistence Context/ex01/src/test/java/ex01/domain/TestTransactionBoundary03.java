@@ -2,8 +2,10 @@ package ex01.domain;
 
 import ex01.repository.BookRepository03;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -18,7 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestTransactionBoundary03 {
+    private static final Book bookMock01 = new Book("book01", "Mastering JPA I");
+
     @PersistenceUnit
     private EntityManagerFactory emf;
 
@@ -34,12 +39,12 @@ public class TestTransactionBoundary03 {
         Book book01 = new Book("book01", "Mastering JPA");
 
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        /* [      Transaction Begin      ] */
+        log.info("----------- Began Transaction: {}, completed: {}", status, status.isCompleted());
 
-        bookRepository.save(book01);
+        bookRepository.save(bookMock01);
 
-        /* [  Transaction End(Success)  ] */
         transactionManager.commit(status);
+        log.info("----------- Began Transaction: {}, completed: {}", status, status.isCompleted());
     }
 
     @Test

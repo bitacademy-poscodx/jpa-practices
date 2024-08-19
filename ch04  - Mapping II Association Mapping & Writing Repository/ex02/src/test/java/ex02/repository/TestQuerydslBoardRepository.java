@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,7 +69,7 @@ public class TestQuerydslBoardRepository {
     @Order(2)
     @Transactional // for Divisioning JPQL Logs
     public void testFindAll() {
-        List<Board> list = boardRepository.findAll();
+        List<Board> list = boardRepository.findAllWithNoJoin();
         assertEquals(countBoard, list.size());
     }
 
@@ -76,7 +77,7 @@ public class TestQuerydslBoardRepository {
     @Order(3)
     @Transactional // for Divisioning JPQL Logs
     public void testFindAllWithInnerJoin() {
-        List<Board> list = boardRepository.findAllWithInnerJoin();
+        List<Board> list = boardRepository.findAllWithOnlyInnerJoin();
         assertEquals(countBoard, list.size());
     }
 
@@ -84,7 +85,7 @@ public class TestQuerydslBoardRepository {
     @Order(4)
     @Transactional // for Divisioning JPQL Logs
     public void testFindAllWithFetchJoin() {
-        List<Board> list = boardRepository.findAllWithFetchJoin();
+        List<Board> list = boardRepository.findAll(Sort.Order.desc("regDate"));
         assertEquals(countBoard, list.size());
     }
 
@@ -92,7 +93,7 @@ public class TestQuerydslBoardRepository {
     @Order(5)
     @Transactional // for Divisioning JPQL Logs
     public void testFindAll03Pagination() {
-        List<Board> list = boardRepository.findAllWithFetchJoinAndPagination(1, 2);
+        List<Board> list = boardRepository.findAll(1, 2, Sort.Order.desc("regDate"));
         assertEquals(2, list.size());
     }
 
@@ -100,7 +101,7 @@ public class TestQuerydslBoardRepository {
     @Order(6)
     @Transactional // for Divisioning JPQL Logs
     public void testFindAllWithFetchJoinAndPagination() {
-        List<Board> list = boardRepository.findAllWithFetchJoinAndPaginationAndLikeSearchs("내용", 1, 2);
+        List<Board> list = boardRepository.findAllByTitleContainingAndContentsContaining("내용", "내용", 1, 2, Sort.Order.desc("regDate"));
         assertEquals(2, list.size());
     }
 
