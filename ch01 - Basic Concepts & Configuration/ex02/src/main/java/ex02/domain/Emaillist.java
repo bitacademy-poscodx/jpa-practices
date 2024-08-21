@@ -1,4 +1,4 @@
-package ex01.domain06;
+package ex02.domain;
 
 import lombok.*;
 

@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class TestPersistenceConfig03 {
     @Test
-    void testDummy() {
-        log.info("test nothing...");
+    void testDDLAutoGeneration() {
+        log.info("DDL Auto Generation,,,");
     }
 }

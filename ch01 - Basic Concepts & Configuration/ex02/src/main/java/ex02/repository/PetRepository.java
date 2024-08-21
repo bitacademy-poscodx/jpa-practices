@@ -1,6 +1,6 @@
 package ex02.repository;
 
-import ex02.domain01_05.Pet;
+import ex02.domain.Pet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 

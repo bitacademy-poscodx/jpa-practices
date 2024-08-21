@@ -1,6 +1,6 @@
 package ex02;
 
-import ex02.domain06_07.Emaillist;
+import ex02.domain.Emaillist;
 import ex02.repository.EmaillistRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

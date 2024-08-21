@@ -1,6 +1,6 @@
 package ex01.config;
 
-import ex01.domain01_05.Pet;
+import ex01.domain.Pet;
 import ex01.repository.PetRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class TestPersistenceConfig04 {
     @Rollback(false)
     void testPetRepositorySave() {
         Pet pet = new Pet();
-        pet.setId(2);
+        pet.setId(1);
 
         petRepository.save(pet);
     }

@@ -11,6 +11,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
@@ -35,7 +36,7 @@ public class PersistenceConfig05 {
     // 2. EntityManagerFactory(Proxy to LocalContainerEntityManagerFactoryBean)
     @Primary
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws Throwable {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
 
@@ -43,7 +44,7 @@ public class PersistenceConfig05 {
         emf.setPersistenceUnitName("jpadb");
 
         // Scanning Entity at Base Packages
-        emf.setPackagesToScan("ex01.domain01_05");
+        emf.setPackagesToScan("ex01.domain");
 
         // Entity Mapping XMLs
         // emf.setMappingResources("");
@@ -71,9 +72,9 @@ public class PersistenceConfig05 {
     // 3. PlatformTransactionManager(JpaTransactionManager)
     @Primary
     @Bean
-    public PlatformTransactionManager transactionManager() throws Throwable {
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+        transactionManager.setEntityManagerFactory(entityManagerFactory);
 
         return transactionManager;
     }

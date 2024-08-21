@@ -3,7 +3,7 @@ spring:
   application:
     name: ex02
   profiles:
-      active: default
+    active: default
 
 
 ---

@@ -1,6 +1,7 @@
 package ex02.repository;
 
-import ex02.domain06_07.Emaillist;
+
+import ex02.domain.Emaillist;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;

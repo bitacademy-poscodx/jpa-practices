@@ -1,4 +1,4 @@
-package ex01.domain01_05;
+package ex02.domain;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -11,7 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes={PersistenceConfig03.class})
 class TestPersistenceConfig03 {
     @Test
-    void testDummy() {
-        log.info("test nothing...");
+    void testDDLAutoGeneration() {
+        log.info("DDL Auto Generation,,,");
     }
 }

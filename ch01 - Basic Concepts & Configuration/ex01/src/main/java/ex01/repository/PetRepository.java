@@ -1,6 +1,6 @@
 package ex01.repository;
 
-import ex01.domain01_05.Pet;
+import ex01.domain.Pet;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

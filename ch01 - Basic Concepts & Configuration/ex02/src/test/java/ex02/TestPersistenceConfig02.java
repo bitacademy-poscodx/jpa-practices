@@ -13,20 +13,15 @@ import javax.persistence.PersistenceUnit;
 @Slf4j
 @SpringBootTest
 class TestPersistenceConfig02 {
-    @Autowired
-    private TransactionManager tm;
-
     @PersistenceUnit
     private EntityManagerFactory emf;
 
-    @BeforeEach
-    public void setUpBeforeEachTest() {
-        log.info("[Before Testing] TransactionManager: " + tm);
-        log.info("[Before Testing] EntityManagerFactory: " + emf);
-    }
+    @Autowired
+    private TransactionManager tm;
 
     @Test
-    void testDummy() {
-        log.info("test nothing...");
+    public void testConfiguration() {
+        log.info("[Before Testing] EntityManagerFactory: {}", emf);
+        log.info("[Before Testing] TransactionManager: {}", tm);
     }
 }

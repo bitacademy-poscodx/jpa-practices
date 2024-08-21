@@ -21,8 +21,8 @@ class TestPersistenceConfig01 {
 
     @BeforeEach
     public void setUpBeforeEachTest() {
-        log.info("[Before Testing] TransactionManager: " + tm);
-        log.info("[Before Testing] EntityManagerFactory: " + emf);
+        log.info("[Before Testing] TransactionManager: {}", tm);
+        log.info("[Before Testing] EntityManagerFactory: {}", emf);
     }
 
     @Test
