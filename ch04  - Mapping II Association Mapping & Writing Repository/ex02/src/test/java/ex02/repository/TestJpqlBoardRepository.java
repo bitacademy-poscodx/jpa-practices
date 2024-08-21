@@ -2,6 +2,7 @@ package ex02.repository;
 
 import ex02.domain.Board;
 import ex02.domain.User;
+import ex02.domain.dto.BoardDto;
 import ex02.domain.type.GenderType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.MethodOrderer;
@@ -59,8 +60,8 @@ public class TestJpqlBoardRepository {
     @Test
     @Order(1)
     @Transactional
-    public void testFindById() {
-        Board board = boardRepository.findById(board01.getId());
+    public void testFind() {
+        Board board = boardRepository.find(board01.getId());
 
         assertNotNull(board);
         assertEquals("고길동", board.getUser().getName());
@@ -69,13 +70,38 @@ public class TestJpqlBoardRepository {
     @Test
     @Order(2)
     @Transactional // for Divisioning JPQL Logs
-    public void testFindByIdInJpql() {
-        Board board = boardRepository.findByIdInJpql(board02.getId());
+    public void testFindByIdWithNoJoin() {
+        Board board = boardRepository.findByIdWithNoJoin(board02.getId());
 
         assertNotNull(board);
         assertEquals("김정자", board.getUser().getName());
     }
 
+    @Test
+    @Order(3)
+    @Transactional // for Divisioning JPQL Logs
+    public void testFindByIdWithInnerJoin() {
+        Board board = boardRepository.findByIdWithInnerJoin(board02.getId());
+
+        assertNotNull(board);
+        assertEquals("김정자", board.getUser().getName());
+    }
+
+    @Test
+    @Order(4)
+    @Transactional // for Divisioning JPQL Logs
+    public void testFindByIdWithInnerJoinAndProjection() {
+        BoardDto board = boardRepository.findByIdWithInnerJoinAndProjection(board02.getId());
+
+        assertNotNull(board);
+        assertEquals("김정자", board.getUserName());
+    }
+
+
+
+
+
+    /*
     @Test
     @Order(3)
     @Transactional // for Divisioning JPQL Logs
@@ -179,4 +205,5 @@ public class TestJpqlBoardRepository {
         userRepository.deleteByIdInJpql(user01.getId());
         userRepository.deleteByIdInJpql(user02.getId());
     }
+    */
 }

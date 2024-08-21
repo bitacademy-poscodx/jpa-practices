@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestQuerydslGuestbookRepository {
-    private static final Guestbook guesbookMock = new Guestbook("고길동", "1234", "안녕", new Date());
+    private static final Guestbook guesbookMock = new Guestbook("고길동", "1234", "안녕");
 
     @Autowired
     private QuerydslGuestbookRepository guestbookRepository;

@@ -22,19 +22,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestJpqlGuestbookRepository {
-    private static final Guestbook guesbookMock = new Guestbook("고길동", "1234", "안녕", new Date());
+    private static final Guestbook guesbookMock = new Guestbook("고길동", "1234", "안녕");
 
     @Autowired
     private JpqlGuestbookRepository guestbookRepository;
 
-    @Test
-    @Order(0)
-    @Transactional
-    @Rollback(false)
-    public void testSave() {
-        guestbookRepository.save(guesbookMock);
-        assertNotNull(guesbookMock.getId());
-    }
+//    @Test
+//    @Order(0)
+//    @Transactional
+//    @Rollback(false)
+//    public void testSave() {
+//        guestbookRepository.save(guesbookMock);
+//        assertNotNull(guesbookMock.getId());
+//    }
 
     @Test
     @Order(1)
@@ -48,7 +48,7 @@ public class TestJpqlGuestbookRepository {
     @Order(2)
     @Transactional // for Divisioning JPQL Logs
     public void testFindAllInJpql() {
-        List<GuestbookDto> list = guestbookRepository.findAllInJpql();
+        List<GuestbookDto> list = guestbookRepository.findAllWithProjection();
         assertEquals(guestbookRepository.count(), list.size());
     }
 

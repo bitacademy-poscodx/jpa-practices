@@ -1,13 +1,21 @@
 package ex02.repository.guerydsl;
 
 import ex02.domain.Board;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
-public interface QuerydslBoardRepository {
+public interface QuerydslBoardRepository<R, ID> {
+
+
+
     <T> T findById(Class<T> clazzDto, Integer id);
+
+    // <S extends R> List<S> findAll();
+
+    Page<R> findAll(Pageable pageable);
 
     List<Board> findAll(Sort.Order... orders);
 

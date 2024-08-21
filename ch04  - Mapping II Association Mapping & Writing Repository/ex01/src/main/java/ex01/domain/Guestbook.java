@@ -1,7 +1,7 @@
 package ex01.domain;
 
-import com.sun.istack.NotNull;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -12,6 +12,7 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "guestbook", schema = "webdb")
 public class Guestbook {
@@ -20,20 +21,20 @@ public class Guestbook {
     @Column(name = "no", nullable = false)
     private Integer id;
 
-    @NotNull
+    @NonNull
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @NotNull
+    @NonNull
     @Column(name = "password", nullable = false, length = 10)
     private String password;
 
-    @NotNull
+    @NonNull
     @Type(type = "text")
     @Column(name = "contents", nullable = false)
     private String contents;
 
-    @NotNull
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "reg_date", nullable = false)
     private Date regDate;

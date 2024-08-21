@@ -1,6 +1,8 @@
 package ex02.repository;
 
 import ex02.domain.Board;
+import ex02.domain.dto.BoardDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -8,6 +10,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+@Slf4j
 @Repository
 public class JpqlBoardRepository {
 
@@ -21,72 +24,104 @@ public class JpqlBoardRepository {
         em.persist(board);
     }
 
-    public Board findById(int id) {
+    public Board find(int id) {
         return em.find(Board.class, id);
     }
 
-    public Board findByIdInJpql(int id) {
-        String qlString = "select b from Board b where b.id = :id";
-        TypedQuery<Board> query = em.createQuery(qlString, Board.class);
+    public Board findByIdWithNoJoin(int id) {
+        String jpql = "select b from Board b where b.id = :id";
+        TypedQuery<Board> query = em.createQuery(jpql, Board.class);
 
         query.setParameter("id", id);
         return query.getSingleResult();
     }
 
+    public Board findByIdWithInnerJoin(int id) {
+        String jpql = "select b from Board b join b.user u where b.id = :id";
+        TypedQuery<Board> query = em.createQuery(jpql, Board.class);
+
+        query.setParameter("id", id);
+        return query.getSingleResult();
+    }
+
+    public BoardDto findByIdWithInnerJoinAndProjection(int id) {
+        String jpql = "select new ex02.domain.dto.BoardDto(b.id, b.hit, b.title, b.contents, b.regDate, u.name) from Board b join b.user u where b.id = :id";
+        TypedQuery<BoardDto>  query = em.createQuery(jpql, BoardDto.class);
+
+        query.setParameter("id", id);
+        return query.getSingleResult();
+    }
+
+    public Board findById(int id) {
+        String jpql = "select b from Board b join fetch b.user where b.id = :id";
+        TypedQuery<Board> query = em.createQuery(jpql, Board.class);
+
+        query.setParameter("id", id);
+        return query.getSingleResult();
+    }
+
+    public List<Board> findAllWithNoJoin() {
+        String jpql = "select b from Board b";
+        TypedQuery<Board> query = em.createQuery(jpql, Board.class);
+
+        return query.getResultList();
+    }
+
+    public List<BoardDto> findAllWithInnerJoinAndProjection() {
+        String jpql = "select new ex02.domain.dto.BoardDto(b.id, b.hit, b.title, b.contents, b.regDate, u.name) from Board b inner join b.user u";
+        TypedQuery<BoardDto> query = em.createQuery(jpql, BoardDto.class);
+
+        return query.getResultList();
+    }
+
     public List<Board> findAll() {
-        String jpql = "select b from Board b order by b.regDate desc";
+        String jpql = "select b from Board b join fetch b.user";
         TypedQuery<Board> query = em.createQuery(jpql, Board.class);
 
         return query.getResultList();
     }
 
-    public List<Board> findAllWithInnerJoin() {
-        String jpql = "select b from Board b inner join b.user u order by b.regDate desc";
-        TypedQuery<Board> query = em.createQuery(jpql, Board.class);
-
-        return query.getResultList();
-    }
-
-    public List<Board> findAllWithFetchJoin() {
+    public List<Board> findAllOrderByRegDateDesc() {
         String jpql = "select b from Board b join fetch b.user order by b.regDate desc";
         TypedQuery<Board> query = em.createQuery(jpql, Board.class);
 
         return query.getResultList();
     }
 
-    public List<Board> findAllWithFetchJoinAndPagination(int page, int size) {
+    public List<Board> findTopKOrderByRegDateDesc(int page, int k) {
         String jpql = "select b from Board b join fetch b.user order by b.regDate desc";
         TypedQuery<Board> query = em.createQuery(jpql, Board.class);
 
-        query.setFirstResult((page - 1) * size);
-        query.setMaxResults(size);
+        query.setFirstResult((page - 1) * k); // offset
+        query.setMaxResults(k);
 
         return query.getResultList();
     }
 
-    public List<Board> findAllWithFetchJoinAndPaginationAndLikeSearch(String keyword, int page, int size) {
-        String jpql = "select b from Board b join fetch b.user where b.title like :keywordContains or b.contents like :keywordContains order by b.regDate desc";
+    public List<Board> findTopKByTitleContainingAndContensContainingOrderByRegDateDesc(String title, String contents, int page, int k) {
+        String jpql = "select b from Board b join fetch b.user where b.title like :titleContains or b.contents like :contentsContains order by b.regDate desc";
         TypedQuery<Board> query = em.createQuery(jpql, Board.class);
 
-        query.setParameter("keywordContains", "%" + keyword + "%");
-        query.setFirstResult((page - 1) * size);
-        query.setMaxResults(size);
+        query.setParameter("titleContains", "%" + title + "%");
+        query.setParameter("contentsContains", "%" + contents + "%");
+        query.setFirstResult((page - 1) * k); // offset
+        query.setMaxResults(k);
 
         return query.getResultList();
     }
 
-    public Board update(Board board) {
-        Board boardPersisted = em.find(Board.class, board.getId());
+    public Board findAndUpdate(Board argBoard) {
+        Board board = em.find(Board.class, argBoard.getId());
 
-        if (boardPersisted != null) {
-            boardPersisted.setTitle(board.getTitle());
-            boardPersisted.setContents(board.getContents());
+        if (board != null) {
+            board.setTitle(argBoard.getTitle());
+            board.setContents(argBoard.getContents());
         }
 
-        return boardPersisted;
+        return board;
     }
 
-    public int updateInJpql(Board board) {
+    public int update(Board board) {
         String jpql = "update Board b set b.title=:title, b.contents=:contents where b.id=:id";
         Query query = em.createQuery(jpql);
 
@@ -96,12 +131,12 @@ public class JpqlBoardRepository {
         return query.executeUpdate();
     }
 
-    public void deleteById(int id) {
+    public void findAndDelete(int id) {
         Board board = em.find(Board.class, id);
         em.remove(board);
     }
 
-    public int deleteByIdInJpql(int id) {
+    public int deleteById(int id) {
         String jpql = "delete from Board b where b.id=:id";
         Query query = em.createQuery(jpql);
 

@@ -10,12 +10,16 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import ex02.domain.Board;
 import ex02.domain.dto.FieldPath;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +30,7 @@ import static com.querydsl.core.types.Order.DESC;
 import static ex02.domain.QBoard.board;
 
 @Slf4j
-@Repository
-public class QuerydslBoardRepositoryImpl extends QuerydslRepositorySupport implements QuerydslBoardRepository {
+public class QuerydslBoardRepositoryImpl<R, ID> extends QuerydslRepositorySupport implements QuerydslBoardRepository<R, ID> {
 
     private final JPAQueryFactory queryFactory;
 
@@ -52,6 +55,11 @@ public class QuerydslBoardRepositoryImpl extends QuerydslRepositorySupport imple
                 .innerJoin(board.user())
                 .where(board.id.eq(id))
                 .fetchOne();
+    }
+
+    @Override
+    public Page<R> findAll(Pageable pageable) {
+        return null;
     }
 
     @Override

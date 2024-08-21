@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -24,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestJpaGuestbookRepository {
-    private static final Guestbook guesbookMock01 = new Guestbook("고길동", "1234", "안녕!", new Date());
-    private static final Guestbook guesbookMock02 = new Guestbook("고철수", "1234", "안녕하세요!", new Date());
-    private static final Guestbook guesbookMock03 = new Guestbook("고영희", "1234", "안녕하세요!", new Date());
+    private static final Guestbook guesbookMock01 = new Guestbook("고길동", "1234", "안녕!");
+    private static final Guestbook guesbookMock02 = new Guestbook("고철수", "1234", "안녕하세요!");
+    private static final Guestbook guesbookMock03 = new Guestbook("고영희", "1234", "안녕하세요!");
     private static Long countGuestbook = null;
 
     @Autowired
