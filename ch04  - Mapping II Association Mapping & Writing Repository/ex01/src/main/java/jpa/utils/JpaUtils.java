@@ -1,6 +1,5 @@
 package jpa.utils;
 
-import ex01.domain.Guestbook;
 import jpa.lambda.exception.Consumer;
 import jpa.lambda.exception.Function;
 import jpa.lambda.exception.Runnable;
@@ -23,7 +22,7 @@ public class JpaUtils {
                 .filter(field -> !field.isAnnotationPresent(Id.class))
                 .filter(field -> !field.isAnnotationPresent(Transient.class))
                 .forEach(field -> Optional
-                        .ofNullable(BeanUtils.getPropertyDescriptor(Guestbook.class, field.getName()))
+                        .ofNullable(BeanUtils.getPropertyDescriptor(entity.getClass(), field.getName()))
                         .ifPresent(property -> Optional
                                 .ofNullable(property.getReadMethod())
                                 .ifPresent(getter -> Optional
@@ -62,9 +61,9 @@ public class JpaUtils {
                 .toList();
 
         Query query = em.createQuery(
-                "update Guestbook gb set " +
-                        String.join(",", fieldNames.stream().map(n -> String.format("_e.%s=:%s", n, n)).toArray(String[]::new)) +
-                        " where _e.id=:id");
+                String.format("update %s %s_ set ", entity.getClass().getName(), entity.getClass().getSimpleName()) +
+                        String.join(",", fieldNames.stream().map(n -> String.format("%s_.%s=:%s", entity.getClass().getSimpleName(), n, n)).toArray(String[]::new)) +
+                        String.format(" where %s_.id=:id", entity.getClass().getSimpleName()));
 
         fieldNames.forEach(field -> query.setParameter(field, Optional
                 .ofNullable(BeanUtils.getPropertyDescriptor(entity.getClass(), field))
