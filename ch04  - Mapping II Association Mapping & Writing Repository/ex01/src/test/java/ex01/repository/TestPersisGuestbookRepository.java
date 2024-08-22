@@ -11,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -50,6 +48,8 @@ public class TestPersisGuestbookRepository {
         Guestbook argGuestbook = new Guestbook();
         argGuestbook.setId(guesbookMock.getId());
         argGuestbook.setContents("안녕2");
+        argGuestbook.setName("고길동2");
+
 
         Guestbook guestbook = guestbookRepository.update(argGuestbook);
         assertNotNull(guestbook.getId());
@@ -61,7 +61,7 @@ public class TestPersisGuestbookRepository {
     @Transactional
     @Rollback(false)
     public void testDelete() {
-        // guestbookRepository.delete(guesbookMock.getId());
-        // assertThat(guestbookRepository.find(guesbookMock.getId())).isEmpty();
+        guestbookRepository.delete(guesbookMock.getId());
+        assertThat(guestbookRepository.find(guesbookMock.getId())).isEmpty();
     }
 }

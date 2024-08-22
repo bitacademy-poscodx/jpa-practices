@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -25,39 +26,56 @@ public class TestJpqlGuestbookRepository {
     private static final Guestbook guesbookMock = new Guestbook("고길동", "1234", "안녕");
 
     @Autowired
-    private JpqlGuestbookRepository guestbookRepository;
+    private PersistGuestbookRepository psersistRepository;
 
-//    @Test
-//    @Order(0)
-//    @Transactional
-//    @Rollback(false)
-//    public void testSave() {
-//        guestbookRepository.save(guesbookMock);
-//        assertNotNull(guesbookMock.getId());
-//    }
+    @Autowired
+    private JpqlGuestbookRepository jpqlRepository;
+
+
+    @Test
+    @Order(0)
+    @Transactional
+    @Rollback(false)
+    public void testSave() {
+        psersistRepository.save(guesbookMock);
+        assertNotNull(guesbookMock.getId());
+    }
 
     @Test
     @Order(1)
     @Transactional // for Divisioning JPQL Logs
     public void testFindAll() {
-        List<Guestbook> list = guestbookRepository.findAll();
-        assertEquals(guestbookRepository.count(), list.size());
+        List<Guestbook> list = jpqlRepository.findAll();
+        assertEquals(jpqlRepository.count(), list.size());
     }
 
     @Test
     @Order(2)
     @Transactional // for Divisioning JPQL Logs
-    public void testFindAllInJpql() {
-        List<GuestbookDto> list = guestbookRepository.findAllWithProjection();
-        assertEquals(guestbookRepository.count(), list.size());
+    public void testFindAllWithProjection() {
+        List<GuestbookDto> list = jpqlRepository.findAllWithProjection();
+        assertEquals(jpqlRepository.count(), list.size());
     }
 
     @Test
     @Order(3)
     @Transactional
     @Rollback(false)
+    public void testUpdate() {
+        Guestbook argGuestbook = new Guestbook();
+        argGuestbook.setId(guesbookMock.getId());
+        argGuestbook.setContents("안녕2");
+        argGuestbook.setName("고길동2");
+
+        jpqlRepository.update(argGuestbook);
+    }
+
+    @Test
+    @Order(4)
+    @Transactional
+    @Rollback(false)
     public void testDeleteByIdAndPassword() {
-        Integer count = guestbookRepository.deleteByIdAndPassword(guesbookMock.getId(), "1234");
+        Integer count = jpqlRepository.deleteByIdAndPassword(guesbookMock.getId(), "1234");
         assertEquals(1, count);
     }
 }

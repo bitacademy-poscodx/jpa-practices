@@ -2,7 +2,7 @@ package ex02.domain;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Setter
 @Getter

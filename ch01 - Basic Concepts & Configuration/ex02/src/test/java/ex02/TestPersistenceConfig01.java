@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.TransactionManager;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
 
 @Slf4j
 @SpringBootTest

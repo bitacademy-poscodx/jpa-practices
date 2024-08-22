@@ -98,7 +98,7 @@ public class JpqlBoardRepository {
         return query.getResultList();
     }
 
-    public List<Board> findTopKByTitleContainingAndContensContainingOrderByRegDateDesc(String title, String contents, int page, int k) {
+    public List<Board> findTopKByTitleContainisAndContensContainsOrderByRegDateDesc(String title, String contents, int page, int k) {
         String jpql = "select b from Board b join fetch b.user where b.title like :titleContains or b.contents like :contentsContains order by b.regDate desc";
         TypedQuery<Board> query = em.createQuery(jpql, Board.class);
 
