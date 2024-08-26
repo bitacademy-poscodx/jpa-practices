@@ -5,9 +5,9 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://192.168.66.4:3306/bookmall?charset=utf8
-    username: bookmall
-    password: bookmall
+    url: jdbc:mariadb://192.168.66.4:3306/employees?charset=utf8
+    username: hr
+    password: hr
     hikari:
       minimum-idle: 10
       maximum-pool-size: 20
@@ -23,7 +23,7 @@ spring:
         use_sql_comments: true
         default_schema: public
         hbm2ddl:
-          auto: create
+          auto: validate
 
 logging:
   pattern:

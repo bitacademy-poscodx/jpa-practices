@@ -45,7 +45,7 @@ public class Orders {
 
     @Override
     public String toString() {
-        return "Order{" +
+        return "Orders{" +
                 "id=" + id +
                 ", number='" + number + '\'' +
                 ", payment=" + payment +

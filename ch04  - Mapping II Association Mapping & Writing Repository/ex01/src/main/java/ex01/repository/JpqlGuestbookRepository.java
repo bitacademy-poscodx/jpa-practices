@@ -1,9 +1,9 @@
 package ex01.repository;
 
 import ex01.domain.Guestbook;
-import ex01.domain.dto.GuestbookDto;
 import jpa.utils.JpaUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -17,36 +17,39 @@ public class JpqlGuestbookRepository {
     private EntityManager em;
 
     public Optional<Guestbook> findById(Integer id) {
-        String jpql = "select gb from Guestbook gb where gb.id = :id";
+        String jpql = "select gb from Guestbook gb where gb.id = ?1";
         TypedQuery<Guestbook> query = em.createQuery(jpql, Guestbook.class);
 
-        query.setParameter("id", id);
+        query.setParameter(1, id);
         return Optional.ofNullable(query.getSingleResult());
     }
 
-    public Optional<GuestbookDto> findByIdWithProjection(Integer id) {
-        String jpql = "select new ex01.domain.dto.GuestbookDto(gb.id, gb.name, gb.contents, gb.regDate) from Guestbook gb where gb.id = :id";
-        TypedQuery<GuestbookDto> query = em.createQuery(jpql, GuestbookDto.class);
-
+    public <T> Optional<T> findById(Integer id, Class<T> dtoClass) {
+        TypedQuery<T> query = JpaUtils.queryProjectionFindById(em, Guestbook.class, dtoClass);
         query.setParameter("id", id);
+
         return Optional.ofNullable(query.getSingleResult());
     }
 
     public List<Guestbook> findAll() {
         String jpql = "select gb from Guestbook gb";
         TypedQuery<Guestbook> query = em.createQuery(jpql, Guestbook.class);
+        return query.getResultList();
+    }
+
+    public List<Guestbook> findAll(Sort.Order... orders) {
+        String jpql = "select gb from Guestbook gb";
+        TypedQuery<Guestbook> query = em.createQuery(jpql, Guestbook.class);
+        return query.getResultList();
+    }
+
+    public <T> List<T> findAll(Class<T> dtoClass) {
+        TypedQuery<T> query = JpaUtils.queryProjectionFindAll(em, Guestbook.class, dtoClass);
 
         return query.getResultList();
     }
 
-    public List<GuestbookDto> findAllWithProjection() {
-        String jpql = "select new ex01.domain.dto.GuestbookDto(gb.id, gb.name, gb.contents, gb.regDate) from Guestbook gb";
-        TypedQuery<GuestbookDto> query = em.createQuery(jpql, GuestbookDto.class);
-
-        return query.getResultList();
-    }
-
-    public List<Guestbook> findAllOrderedByRegDateDesc() {
+    public List<Guestbook> findAllOrderByRegDateDesc() {
         String jpql = "select gb from Guestbook gb order by gb.regDate desc";
         TypedQuery<Guestbook> query = em.createQuery(jpql, Guestbook.class);
 
@@ -86,7 +89,7 @@ public class JpqlGuestbookRepository {
     }
 
     public int update(Guestbook argGuestbook) {
-        return JpaUtils.createUpdateQuery(em, argGuestbook).executeUpdate();
+        return JpaUtils.queryUpdate(em, argGuestbook).executeUpdate();
     }
 
     public int deleteById(Integer id) {
@@ -112,6 +115,4 @@ public class JpqlGuestbookRepository {
 
         return query.getSingleResult();
     }
-
-
 }
